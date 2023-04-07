@@ -1,3 +1,9 @@
+from utils import bilibili_100,bili_views
+from selenium.webdriver.chrome.options import Options
+import pandas as pd
+import time
+import os
+
 if __name__=="__main__":
 
     #config
@@ -17,9 +23,11 @@ if __name__=="__main__":
     chrome_options.add_argument('--no-gpu')
     chrome_options.add_argument('--disable-setuid-sandbox')
     chrome_options.add_argument('--single-process')
-    #chrome_options.add_argument('start-maximized')
-    chrome_options.add_argument('--window-size=1960,1080')
+    chrome_options.add_argument('start-maximized')
+    #chrome_options.add_argument('--window-size=1960,1080')
     chrome_options.add_argument('--user-agent={}'.format(USER_AGENT[2]))
+    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    chrome_options.add_argument("--disable-3d-apis")
 
     danmaku = False
 
@@ -28,19 +36,19 @@ if __name__=="__main__":
         #sys.exit()
     root_path = os.getcwd()
     if not os.path.exists('top100.csv'):
-        videos_info = pd.DataFrame(columns=['id','title','play_time','danmaku','proxy','tshark_state','url'])
-        bilibili_100()
+        videos_list = pd.DataFrame(columns=['id','title','play_time','danmaku','proxy','tshark_state','url'])
+        videos_list = bilibili_100()
     else:
-        videos_info = pd.read_csv('top100.csv')
+        videos_list = pd.read_csv('top100.csv')
     #videos_info.to_excel()
 
-    for j in range(26,50,1):
+    for j in range(26,27,1):
         work_date = time.strftime("%Y-%m-%d", time.localtime())
         work_date = work_date + str(j)
-        result_path = os.path.join('D:\\result',work_date)
+        result_path = os.path.join('E:\\result',work_date)
 
-        for i in range(0,20,1):
-            bil_views(i,181)  #超过900秒的视频就跳过
-        print(videos_info.head(10
+        for i in range(0,3,1):
+            bili_views(i,181,videos_list=videos_list,result_path=result_path,chrome_options=chrome_options)  #超过900秒的视频就跳过
+        print(videos_list.head(10
                            ))
     #videos_info.to_csv('top100_{}.csv'.format(work_date),encoding="utf_8-sig",index=False)
