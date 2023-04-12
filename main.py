@@ -18,11 +18,11 @@ if __name__=="__main__":
     ]
 
     chrome_options=Options()
-    chrome_options.add_argument('--headless')
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--no-gpu')
-    chrome_options.add_argument('--disable-setuid-sandbox')
-    chrome_options.add_argument('--single-process')
+    #chrome_options.add_argument('--headless')
+    #chrome_options.add_argument('--no-sandbox')
+    #chrome_options.add_argument('--no-gpu')
+    #chrome_options.add_argument('--disable-setuid-sandbox')
+    #chrome_options.add_argument('--single-process')
     chrome_options.add_argument('start-maximized')
     #chrome_options.add_argument('--window-size=1960,1080')
     chrome_options.add_argument('--user-agent={}'.format(USER_AGENT[2]))
@@ -30,6 +30,10 @@ if __name__=="__main__":
     chrome_options.add_argument("--disable-3d-apis")
 
     danmaku = False
+    PC = 'hdu'
+
+    result_path = {'hdu':'D:\\result','ywicc':'E:\\result'}
+    tshark_path = {'hdu':'C:\\Program Files\\Wireshark\\tshark.exe','ywicc':'D:\\Programs\Wireshark\\tshark.exe'}
 
     #if os.path.exists(result_path):
      #   print('result folder exists')
@@ -45,10 +49,10 @@ if __name__=="__main__":
     for j in range(26,27,1):
         work_date = time.strftime("%Y-%m-%d", time.localtime())
         work_date = work_date + str(j)
-        result_path = os.path.join('E:\\result',work_date)
+        result_path = os.path.join(result_path[PC],work_date)
 
         for i in range(0,3,1):
-            bili_views(i,181,videos_list=videos_list,result_path=result_path,chrome_options=chrome_options)  #超过900秒的视频就跳过
+            bili_views(i,181,videos_list=videos_list,result_path=result_path,chrome_options=chrome_options,tshark_path=tshark_path[PC])  #超过900秒的视频就跳过
         print(videos_list.head(10
                            ))
     #videos_info.to_csv('top100_{}.csv'.format(work_date),encoding="utf_8-sig",index=False)

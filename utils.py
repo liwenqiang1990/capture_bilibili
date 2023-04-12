@@ -59,15 +59,15 @@ def bilibili_100():
     videos_list.to_csv('top100.csv',encoding="utf_8-sig",index=False)
     return videos_list
 
-def auto_tshark(work_path,id,t):
+def auto_tshark(work_path,id,t,tshark_path):
     duration='duration:'+str(t)
     pcap_name = os.path.join(work_path,id+'.pcap')
-    option = ['D:\\Programs\Wireshark\\tshark.exe','-i','8','-a',duration,'-F','pcap','-w',pcap_name]
+    option = [tshark_path,'-i','8','-a',duration,'-F','pcap','-w',pcap_name]
     print(option)
     p = subprocess.Popen(option,stdout=subprocess.PIPE,stderr = subprocess.PIPE)
     return p
 
-def bili_views(i,threshold,videos_list,result_path,chrome_options):
+def bili_views(i,threshold,videos_list,result_path,chrome_options,tshark_path):
     av = videos_list.loc[i]['id']
     t = parse_time(videos_list.loc[i]['play_time'])+5 #多抓10秒包
     if t>(threshold+10):
@@ -81,7 +81,8 @@ def bili_views(i,threshold,videos_list,result_path,chrome_options):
     # 访问网页
     url = videos_list.loc[i,'url']
     start_time = time.time()
-    p = auto_tshark(work_path,av,t)
+    p = auto_tshark(work_path,av,t,tshark_path)
+    print(url)
     browser.get(url)
     browser.save_screenshot(os.path.join(work_path,'start.png'))
     # 2倍速播放
