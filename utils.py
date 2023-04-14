@@ -59,19 +59,20 @@ def bilibili_100():
     videos_list.to_csv('top100.csv',encoding="utf_8-sig",index=False)
     return videos_list
 
-def auto_tshark(work_path,id,t,tshark_path):
+def auto_tshark(work_path,id,t,tshark):
     duration='duration:'+str(t)
     pcap_name = os.path.join(work_path,id+'.pcap')
-    option = [tshark_path,'-i','8','-a',duration,'-F','pcap','-w',pcap_name]
+    option = [tshark[0],'-i',tshark[1],'-a',duration,'-F','pcap','-w',pcap_name]
     print(option)
     p = subprocess.Popen(option,stdout=subprocess.PIPE,stderr = subprocess.PIPE)
     return p
 
-def bili_views(i,threshold,videos_list,result_path,chrome_options,tshark_path):
+def bili_views(i,threshold,videos_list,result_path,chrome_options,tshark):
     av = videos_list.loc[i]['id']
     t = parse_time(videos_list.loc[i]['play_time'])+5 #多抓10秒包
     if t>(threshold+10):
         return
+    t = 60
     work_path = os.path.join(result_path,str(i)+'_'+av)
     if not os.path.exists(work_path):
         os.makedirs(work_path)
@@ -81,7 +82,7 @@ def bili_views(i,threshold,videos_list,result_path,chrome_options,tshark_path):
     # 访问网页
     url = videos_list.loc[i,'url']
     start_time = time.time()
-    p = auto_tshark(work_path,av,t,tshark_path)
+    p = auto_tshark(work_path,av,t+5,tshark)
     print(url)
     browser.get(url)
     browser.save_screenshot(os.path.join(work_path,'start.png'))
@@ -98,14 +99,14 @@ def bili_views(i,threshold,videos_list,result_path,chrome_options,tshark_path):
         print('danmaku_button error')
 
     videos_list.loc[i,'danmaku'] = 'off'
-    try:
-        next_button = WebDriverWait(browser, 5).until(
-                         EC.presence_of_element_located((By.XPATH,'/html[1]/body[1]/div[2]/div[3]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[1]/div[1]/span[1]'))
-        )
-        next_button.click()
-        print('播放方式1')
-    except TimeoutException:
-        print("连播错误1")
+    #try:
+    #    next_button = WebDriverWait(browser, 5).until(
+    #                     EC.presence_of_element_located((By.XPATH,'/html[1]/body[1]/div[2]/div[3]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[1]/div[1]/span[1]'))
+    #    )
+    #    next_button.click()
+    #    print('播放方式1')
+    #except TimeoutException:
+    #    print("连播错误1")
 
     play_time = time.time()
 

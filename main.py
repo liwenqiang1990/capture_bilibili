@@ -19,8 +19,15 @@ if __name__=="__main__":
 
     chrome_options=Options()
     #chrome_options.add_argument('--headless')
-    #chrome_options.add_argument('--no-sandbox')
-    #chrome_options.add_argument('--no-gpu')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument("--disable-javascript")
+    prefs = {
+    'profile.default_content_settings': {
+    'profile.default_content_setting_values': {
+    'javascript': 2, # 不加载JS
+    }}}
+    chrome_options.add_experimental_option("prefs", prefs)
     #chrome_options.add_argument('--disable-setuid-sandbox')
     #chrome_options.add_argument('--single-process')
     chrome_options.add_argument('start-maximized')
@@ -33,7 +40,7 @@ if __name__=="__main__":
     PC = 'hdu'
 
     result_path = {'hdu':'D:\\result','ywicc':'E:\\result'}
-    tshark_path = {'hdu':'C:\\Program Files\\Wireshark\\tshark.exe','ywicc':'D:\\Programs\Wireshark\\tshark.exe'}
+    tshark = {'hdu':['C:\\Program Files\\Wireshark\\tshark.exe','4'],'ywicc':['D:\\Programs\Wireshark\\tshark.exe','8']}
 
     #if os.path.exists(result_path):
      #   print('result folder exists')
@@ -51,8 +58,8 @@ if __name__=="__main__":
         work_date = work_date + str(j)
         result_path = os.path.join(result_path[PC],work_date)
 
-        for i in range(0,3,1):
-            bili_views(i,181,videos_list=videos_list,result_path=result_path,chrome_options=chrome_options,tshark_path=tshark_path[PC])  #超过900秒的视频就跳过
+        for i in range(3,4,1):
+            bili_views(i,300,videos_list=videos_list,result_path=result_path,chrome_options=chrome_options,tshark=tshark[PC])  #超过900秒的视频就跳过
         print(videos_list.head(10
                            ))
     #videos_info.to_csv('top100_{}.csv'.format(work_date),encoding="utf_8-sig",index=False)
