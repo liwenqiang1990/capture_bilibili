@@ -4,12 +4,10 @@ import os
 import csv
 import pandas as pd
 
-tshark = {'hdu':['C:\\Program Files\\Wireshark\\tshark.exe','4'],'ywicc':['D:\\Programs\Wireshark\\tshark.exe','8']}
-tshark = tshark['hdu']
 
-def conversation_stat(file_name):
+def conversation_stat(file_path):
     
-    option = [tshark[0],'-n','-r',file_name,'-q','-z','conv,ip']
+    option = ['tshark.exe','-n','-r',file_path,'-q','-z','conv,ip']
     p = subprocess.Popen(option,stdout=subprocess.PIPE,stderr = subprocess.PIPE)
     stdout,stderr = p.communicate()
     assert not stderr,'tshark error'
@@ -21,17 +19,17 @@ def conversation_stat(file_name):
             dst = a[0]
             size = a[4]+a[5]
             print(f'{src} -> {dst}, {size}')
-            option = [tshark[0],'-n','-r',file_name,'-Y',f'ip.addr=={src} && ip.addr=={dst}','-T', 'fields', 
-                      '-e','frame.time_relative',
-                      '-e','tcp.stream', 
-                      '-e','tcp.srcport', 
-                      '-e','tcp.dstport',    
-                      '-e','udp.stream', 
-                      '-e','udp.srcport', 
-                      '-e','udp.dstport',
-                      '-e','ip.src', 
+            option = ['tshark.exe','-n','-r',file_path,'-Y',f'ip.addr=={src} && ip.addr=={dst}','-T', 'fields', 
+                      '-e', 'frame.time_relative',
+                      '-e', 'tcp.stream', 
+                      '-e', 'tcp.srcport', 
+                      '-e', 'tcp.dstport',    
+                      '-e', 'udp.stream', 
+                      '-e', 'udp.srcport', 
+                      '-e', 'udp.dstport',
+                      '-e', 'ip.src', 
                       '-e', 'ip.dst',   
-                      '-e','ip.proto', 
+                      '-e', 'ip.proto', 
                       '-e', 'tcp.len', 
                       '-e', 'udp.length', 
                       '-E', 'header=y', '-E' ,'separator=,']
@@ -51,10 +49,10 @@ def conversation_stat(file_name):
             data2['src_port'] = data['tcp.srcport']+data['udp.srcport']
             data2['dst_address'] = data['ip.dst']
             data2['dst_port'] = data['tcp.dstport']+data['udp.dstport']
-            data2['length'] = data['tcp.len']+data['udp.length']                       
-            data2.to_csv('D:\\result_bak\\2021-04-08_1\\42_BV1fp4y1b7Dc\BV1fp4y1b7Dc.csv')
+            data2['length'] = data['tcp.len']+data['udp.length']
+            path = os.path.splitext(file_path)          
+            data2.to_csv(path[0]+'.csv')
             #data.to_csv('D:\\result_bak\\2021-04-08_1\\42_BV1fp4y1b7Dc\BV1fp4y1b7Dc222.csv')
-    
             break
         
 
