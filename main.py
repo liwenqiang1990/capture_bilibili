@@ -1,4 +1,4 @@
-from utils import bilibili_100,bili_views
+from utils import bilibili_100,bili_views,bili_views2,set_cookies
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import time
@@ -22,12 +22,6 @@ if __name__=="__main__":
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument("--disable-javascript")
-    prefs = {
-    'profile.default_content_settings': {
-    'profile.default_content_setting_values': {
-    'javascript': 2, # 不加载JS
-    }}}
-    chrome_options.add_experimental_option("prefs", prefs)
     #chrome_options.add_argument('--disable-setuid-sandbox')
     #chrome_options.add_argument('--single-process')
     chrome_options.add_argument('start-maximized')
@@ -37,11 +31,11 @@ if __name__=="__main__":
     chrome_options.add_argument("--disable-3d-apis")
 
     danmaku = False
-    PC = 'hdu'
+    PC = 'ywicc'
 
     result_path = {'hdu':'D:\\result','ywicc':'E:\\result'}
     tshark = {'hdu':['C:\\Program Files\\Wireshark\\tshark.exe','4'],'ywicc':['D:\\Programs\Wireshark\\tshark.exe','8']}
-
+    
     #if os.path.exists(result_path):
      #   print('result folder exists')
         #sys.exit()
@@ -52,14 +46,16 @@ if __name__=="__main__":
     else:
         videos_list = pd.read_csv('top100.csv')
     #videos_info.to_excel()
+    cookies_path = os.path.join(result_path[PC],'bilibili_cookie.json')
+    if not os.path.exists(cookies_path):
+        set_cookies(cookies_path)
 
-    for j in range(26,27,1):
+    for j in range(1,50,1):
         work_date = time.strftime("%Y-%m-%d", time.localtime())
         work_date = work_date + str(j)
-        result_path = os.path.join(result_path[PC],work_date)
+        pcap_path = os.path.join(result_path[PC],work_date)
 
-        for i in range(3,4,1):
-            bili_views(i,300,videos_list=videos_list,result_path=result_path,chrome_options=chrome_options,tshark=tshark[PC])  #超过900秒的视频就跳过
-        print(videos_list.head(10
-                           ))
+        for i in range(0,100,1):
+            bili_views2(i,600,videos_list=videos_list,result_path=pcap_path,cookies_path=cookies_path,chrome_options=chrome_options,tshark=tshark[PC])  #超过900秒的视频就跳过
+        print(videos_list.head(10))
     #videos_info.to_csv('top100_{}.csv'.format(work_date),encoding="utf_8-sig",index=False)
