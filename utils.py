@@ -114,7 +114,7 @@ def bili_views2(i,threshold,videos_list,result_path,cookies_path,chrome_options,
     browser = webdriver.Chrome(options=chrome_options)
     p = auto_tshark(work_path,av,t,tshark)
     # 访问网页
-    url = 'https://player.bilibili.com/player.html?bvid='+av
+    url = 'https://player.bilibili.com/player.html?bvid='+av+'&t=0.01'
     start_time = time.time()
     browser.get(url)
     
@@ -170,10 +170,13 @@ def bili_views(i,threshold,videos_list,result_path,cookies_path,chrome_options,t
             'path': '/',
             'expires': None,
             'httponly': False,
+            'go_old_video':1,
+            'i-wanna-go-back':1,
         })
 
     # 访问网页
     url = videos_list.loc[i,'url']
+    url = url+'?t=0.01&high_quality=0&danmaku=0'
     start_time = time.time()
     p = auto_tshark(work_path,av,t+5,tshark)
     print(url)
@@ -188,13 +191,13 @@ def bili_views(i,threshold,videos_list,result_path,cookies_path,chrome_options,t
     # js_2 = '''document.querySelector('video').playbackRate=2'''
     # browser.execute_script(js_2) # 执行js的方法
     # 播放
-    try:
-        danmaku_buttom = WebDriverWait(browser, 5).until(
-                        EC.presence_of_element_located((By.XPATH, '/html[1]/body[1]/div[2]/div[3]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/input[1]'))
-                      )
-        danmaku_buttom.click()
-    except:
-        print('danmaku_button error')
+    # try:
+    #     danmaku_buttom = WebDriverWait(browser, 5).until(
+    #                     EC.presence_of_element_located((By.XPATH, '/html[1]/body[1]/div[2]/div[3]/div[1]/div[2]/div[2]/div[1]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/input[1]'))
+    #                   )
+    #     danmaku_buttom.click()
+    # except:
+    #     print('danmaku_button error')
 
     videos_list.loc[i,'danmaku'] = 'off'
     #try:
@@ -205,6 +208,13 @@ def bili_views(i,threshold,videos_list,result_path,cookies_path,chrome_options,t
     #    print('播放方式1')
     #except TimeoutException:
     #    print("连播错误1")
+    try:
+        next_button = WebDriverWait(browser, 5).until(
+                         EC.presence_of_element_located((By.XPATH,'/html/body/div[2]/div[4]/div[2]/div/div[6]/div[1]/p/span/span[2]'))
+        )
+        next_button.click()
+    except TimeoutException:
+        print("取消连播错误")
 
     play_time = time.time()
 

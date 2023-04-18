@@ -56,6 +56,6 @@ if __name__=="__main__":
         pcap_path = os.path.join(result_path[PC],work_date)
 
         for i in range(0,100,1):
-            bili_views2(i,600,videos_list=videos_list,result_path=pcap_path,cookies_path=cookies_path,chrome_options=chrome_options,tshark=tshark[PC])  #超过900秒的视频就跳过
+            bili_views(i,180,videos_list=videos_list,result_path=pcap_path,cookies_path=cookies_path,chrome_options=chrome_options,tshark=tshark[PC])  #超过900秒的视频就跳过
         print(videos_list.head(10))
     #videos_info.to_csv('top100_{}.csv'.format(work_date),encoding="utf_8-sig",index=False)
