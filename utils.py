@@ -178,7 +178,7 @@ def bili_views(i,threshold,videos_list,result_path,cookies_path,chrome_options,t
     url = videos_list.loc[i,'url']
     url = url+'?t=0.01&high_quality=0&danmaku=0'
     start_time = time.time()
-    p = auto_tshark(work_path,av,t+5,tshark)
+    p = auto_tshark(work_path,av,t,tshark)
     print(url)
 
     browser.get(url)
@@ -221,13 +221,11 @@ def bili_views(i,threshold,videos_list,result_path,cookies_path,chrome_options,t
     print('第{}个视频播放成功,准备时间{}'.format(i,play_time-start_time))
     p.communicate()
     #获取进度条//
-    current_time = browser.find_element_by_xpath('//*[@id="bilibili-player"]/div/div/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[2]/div/span[1]')
-    current_time = current_time.text
-    print(f'current_time:{current_time}')  #transform: scaleX(1);表示播放完毕
+    
     browser.save_screenshot(os.path.join(work_path,'end.png'))
     end_time = time.time()
     #return code为0表示正常tshark运行正常结束
-    tshark_state = 'return code{},tshark_time{},work_time{},{}\n'.format(p.returncode,t,end_time-start_time,current_time)
+    tshark_state = 'return code{},tshark_time{},work_time{}\n'.format(p.returncode,t,end_time-start_time)
     print(tshark_state)
     videos_list.loc[i,'tshark_state']=tshark_state
     browser.close() # 关闭当前页面
