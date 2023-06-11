@@ -12,22 +12,20 @@ def create_dataset(root):
             pathlist.remove(i)
 
     pathlist = [i for i in pathlist if os.path.isdir(os.path.join(root,i))]
-    for date_path in pathlist:
-        for id_path in os.listdir(os.path.join(root,date_path)):
+    for data_path in pathlist:
+        for id_path in os.listdir(os.path.join(root,data_path)):
             id, bv= id_path.split('_')
-            pcap_path = os.path.join(root,date_path,id_path,bv+'.pcap')
+            pcap_path = os.path.join(root,data_path,id_path,bv+'.pcap')
             if os.path.isfile(pcap_path):
                 conversation_stat(pcap_path)
 
-                csv_src_path = os.path.join(root,date_path,id_path,bv+'.csv')
+                csv_src_path = os.path.join(root,data_path,id_path,bv+'.csv')
                 root_csv = os.path.join(root,'csv')
                 if not os.path.isdir(root_csv):
                     os.makedirs(root_csv)
-                csv_dst_path = os.path.join(root_csv,bv+"_"+date_path+'.csv')
+                csv_dst_path = os.path.join(root_csv,bv+"_"+data_path+'.csv')
                 if os.path.isfile(csv_src_path):
                     shutil.copy(csv_src_path,csv_dst_path)
             
-            
 
-
-create_dataset('D:\\result_bak')
+create_dataset('E:\\result_bak\\temp')

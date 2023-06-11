@@ -21,7 +21,7 @@ def conversation_stat(file_path):
                 src = a[2]
                 dst = a[0]
                 size = a[4]+a[5]
-                print(f'{src} -> {dst}, {size}')
+                print(f'{file_path}=={src} -> {dst}, {size}')
                 option = ['tshark.exe','-n','-r',file_path,'-Y',f'ip.addr=={src} && ip.addr=={dst}','-T', 'fields', 
                         '-e', 'frame.time_relative',
                         '-e', 'tcp.stream', 
@@ -41,8 +41,13 @@ def conversation_stat(file_path):
                 stdout,stderr = p.communicate()
 
                 assert not stderr,'tshark error'
+                data = []
+                for i in stdout.splitlines():
+                    tmp = i.decode().split(',')
+                    if len(tmp)==12:
+                        data.append(tmp)
 
-                data = [i.decode().split(',') for i in stdout.splitlines()]
+                #data = [i.decode().split(',') for i in stdout.splitlines()]
                 data = pd.DataFrame(data[1:],columns=data[0])
                 data2 = pd.DataFrame(columns=['time','streamid','protocol','src_address','src_port','dst_address','dst_port','length'] )
                 data2['time'] = data['frame.time_relative']
